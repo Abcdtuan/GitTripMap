@@ -1,14 +1,13 @@
 package com.codeWithProject.TripServer.controller;
 
+import com.codeWithProject.TripServer.dto.BookingTripDto;
 import com.codeWithProject.TripServer.dto.TripDto;
-import com.codeWithProject.TripServer.repository.TripRepository;
 import com.codeWithProject.TripServer.services.customer.CustomerService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +29,22 @@ public class CustomerController {
         TripDto tripDto = customerService.getTripById(id);
         return ResponseEntity.ok(tripDto);
     }
+
+    @PostMapping("/trip/booking")
+    public ResponseEntity<Void> bookingTrip(@RequestBody BookingTripDto bookingTripDto) {
+
+        boolean success = customerService.bookingTrip(bookingTripDto);
+        if (success) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+    }
+
+    @GetMapping("/trip/bookings/{userId}")
+    public ResponseEntity<List<BookingTripDto>> getBookingByTripId(@PathVariable Long userId) {
+        return ResponseEntity.ok(customerService.getBookingByUserId(userId));
+    }
+
     
 }

@@ -1,5 +1,6 @@
 package com.codeWithProject.TripServer.controller;
 
+import com.codeWithProject.TripServer.dto.BookingTripDto;
 import com.codeWithProject.TripServer.dto.ComboDto;
 import com.codeWithProject.TripServer.dto.TripDto;
 import com.codeWithProject.TripServer.repository.TripRepository;
@@ -68,6 +69,18 @@ public class AdminController {
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping("/trip/bookings")
+    public ResponseEntity<List<BookingTripDto>> getBookings() {
+        return ResponseEntity.ok(adminService.getBookings());
+    }
+
+    @GetMapping("/trip/booking/{bookingId}/{status}")
+    public ResponseEntity<?> changeBookingStatus(@PathVariable Long bookingId, @PathVariable String status )  {
+        boolean success = adminService.changeBookingTripStatus(bookingId, status);
+        if(success) return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
     }
 
 }

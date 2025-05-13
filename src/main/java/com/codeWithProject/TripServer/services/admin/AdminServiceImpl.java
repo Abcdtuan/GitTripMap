@@ -1,10 +1,15 @@
 package com.codeWithProject.TripServer.services.admin;
 
+import com.codeWithProject.TripServer.dto.BookingTripDto;
 import com.codeWithProject.TripServer.dto.ComboDto;
 import com.codeWithProject.TripServer.dto.TripDto;
+import com.codeWithProject.TripServer.entity.BookingTrip;
 import com.codeWithProject.TripServer.entity.Combo;
 import com.codeWithProject.TripServer.entity.ComboOption;
 import com.codeWithProject.TripServer.entity.Trip;
+import com.codeWithProject.TripServer.enums.BookingTripStatus;
+import com.codeWithProject.TripServer.repository.BookingTripRepository;
+import com.codeWithProject.TripServer.repository.ComboRepository;
 import com.codeWithProject.TripServer.repository.TripRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final TripRepository tripRepository;
+
+    private final BookingTripRepository bookingTripRepository;
 
     @Override
     public boolean postTrip(TripDto tripDto, List<ComboDto> combos) throws IOException {
@@ -53,6 +61,7 @@ public class AdminServiceImpl implements AdminService {
             }).toList();
             trip.setCombos(comboList);
             tripRepository.save(trip);
+
             return true;
         }catch(Exception e){
             System.out.println("Lỗi: " + e.getMessage());
@@ -127,6 +136,32 @@ public class AdminServiceImpl implements AdminService {
             }
 
             tripRepository.save(existingTrip);
+            existingTrip.getCombos().forEach(combo -> {
+                System.out.println("Combo ID: " + combo.getId());
+                combo.getOptions().forEach(option -> {
+                    System.out.println("Option ID: " + option.getId());
+                });
+            });
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<BookingTripDto> getBookings() {
+        return bookingTripRepository.findAll().stream().map(BookingTrip::getBookingTripDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean changeBookingTripStatus(Long bookingId, String status) {
+        Optional<BookingTrip> optionalBookingTrip = bookingTripRepository.findById(bookingId);
+        if(optionalBookingTrip.isPresent()){
+            BookingTrip existingBookingTrip = optionalBookingTrip.get();
+            if(Objects.equals(status,"Approve"))
+                existingBookingTrip.setBookingTripStatus(BookingTripStatus.APPROVED);
+            else
+                existingBookingTrip.setBookingTripStatus(BookingTripStatus.REJECTED);
+            bookingTripRepository.save(existingBookingTrip);
             return true;
         }
         return false;
