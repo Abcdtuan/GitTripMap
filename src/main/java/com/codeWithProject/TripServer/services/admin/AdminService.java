@@ -3,6 +3,7 @@ package com.codeWithProject.TripServer.services.admin;
 import com.codeWithProject.TripServer.dto.BookingTripDto;
 import com.codeWithProject.TripServer.dto.ComboDto;
 import com.codeWithProject.TripServer.dto.TripDto;
+import com.codeWithProject.TripServer.dto.UserDto;
 import com.codeWithProject.TripServer.enums.BookingTripStatus;
 
 import java.io.IOException;
@@ -22,5 +23,8 @@ public interface AdminService {
     List<BookingTripDto> getBookings();
 
     boolean changeBookingTripStatus(Long bookingId, String status);
+    List<UserDto> getAllUsers ();
+
+    boolean deleteCustomer(Long id);
 
 }

@@ -1,10 +1,9 @@
 package com.codeWithProject.TripServer.repository;
 
-import com.codeWithProject.TripServer.entity.Trip;
+import com.codeWithProject.TripServer.entity.FavoriteItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TripRepository extends JpaRepository<Trip, Long> {
-
+public interface FavoriteItemRepository extends JpaRepository<FavoriteItem, Long> {
 }

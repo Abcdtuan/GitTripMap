@@ -82,5 +82,18 @@ public class AdminController {
         if(success) return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
     }
+    @GetMapping("/allUsers")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(adminService.getAllUsers());
+    }
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean isDeleted = adminService.deleteCustomer(id);
+        if (!isDeleted) {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+    }
 
 }

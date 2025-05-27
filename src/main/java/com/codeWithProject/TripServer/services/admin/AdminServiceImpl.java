@@ -3,6 +3,7 @@ package com.codeWithProject.TripServer.services.admin;
 import com.codeWithProject.TripServer.dto.BookingTripDto;
 import com.codeWithProject.TripServer.dto.ComboDto;
 import com.codeWithProject.TripServer.dto.TripDto;
+import com.codeWithProject.TripServer.dto.UserDto;
 import com.codeWithProject.TripServer.entity.BookingTrip;
 import com.codeWithProject.TripServer.entity.Combo;
 import com.codeWithProject.TripServer.entity.ComboOption;
@@ -11,9 +12,11 @@ import com.codeWithProject.TripServer.enums.BookingTripStatus;
 import com.codeWithProject.TripServer.repository.BookingTripRepository;
 import com.codeWithProject.TripServer.repository.ComboRepository;
 import com.codeWithProject.TripServer.repository.TripRepository;
+import com.codeWithProject.TripServer.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final TripRepository tripRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     private final BookingTripRepository bookingTripRepository;
 
@@ -164,6 +169,16 @@ public class AdminServiceImpl implements AdminService {
             bookingTripRepository.save(existingBookingTrip);
             return true;
         }
+        return false;
+    }
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream().map(user->modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean deleteCustomer(Long id) {
+        userRepository.deleteById(id);
         return false;
     }
 }
